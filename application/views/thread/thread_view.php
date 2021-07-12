@@ -20,7 +20,7 @@ $submit = [
     'value' => 'Submit',
     'type' => 'submit',
     'class' => 'btn btn-secondary mt-3'
-];    
+];
 ?>
 <div class="container">
 <div class="card mt-3">
@@ -74,19 +74,52 @@ $submit = [
                     <?= $r->isi ?>
                 </div>
             </div>
-            <div class="float-start mx-2">
-                <?php if(!empty($reply_update[0]->updated_at)) { ?>
-                <?php foreach($reply_update as $r_up): ?>
-                    <small>Updated by <a href="<?= base_url('user/view/'.$r_up->id)?>"></a><?= $r_up->first_name ?> at <?= $r_up->updated_at ?>. Alasan : <?= $r_up->reason ?></small>
-                <?php endforeach; ?>
-                <?php } ?>
+            <?php if($this->ion_auth->logged_in()) { ?>
+                <div class="float-start mx-2">
+                    <button id="displayComment" class="btn btn-secondary btn-sm">Balas</button>
+                    <?php if(!empty($reply_update->updated_at)) { ?>
+                    <?php foreach($reply_update as $r_up): ?>
+                        <small> | Updated by <a href="<?= base_url('user/view/'.$r_up->id)?>"></a><?= $r_up->first_name ?> at <?= $r_up->updated_at ?>. Alasan : <?= $r_up->reason ?></small>
+                    <?php endforeach; ?>
+                    <?php } ?>
+                </div>
+                <div class="float-end mx-2">
+                    <a href="<?= base_url('reply/edit/'.$r->id) ?>" style="color:#3498db" >Edit</a>
+                    <a href="<?= base_url('reply/delete/'.$r->id.'/'.$thread->id) ?>" style="color:#c0392b">Delete</a>
+                </div>
             </div>
-            <div class="float-end mx-2">
-                <a href="<?= base_url('reply/edit/'.$r->id) ?>" style="color:#3498db" >Edit</a>
-                <a href="<?= base_url('reply/delete/'.$r->id.'/'.$thread->id) ?>" style="color:#c0392b">Delete</a>
+            </div>
+        <?php } ?>
+        <?php foreach($comment as $c) { ?>
+        <div class="container card mb-3" style="margin-top:10px; width:50%; margin-left: 40% ">
+            <div class="card-body">
+                <div class="flex-container">
+                    <div class="text-center">
+                        <small><strong><?= $c->first_name ?></strong></small><br/>
+                        <small><?= $c->created_at ?></small>
+                    </div>
+                    <div style="margin-left:30px" class="mt-3">
+                        <?= $c->isi ?>
+                    </div>
+                </div>
             </div>
         </div>
+        <?php } ?>
+        <?php foreach($subComment as $sc) { ?>
+        <div class="container card mb-3" style="margin-top:10px; width:35%; margin-left: 45% ">
+            <div class="card-body">
+                <div class="flex-container">
+                    <div class="text-center">
+                        <small><strong><?= $sc->first_name ?></strong></small><br/>
+                        <small><?= $sc->created_at ?></small>
+                    </div>
+                    <div style="margin-left:30px" class="mt-3">
+                        <?= $sc->isi ?>
+                    </div>
+                </div>
+            </div>
         </div>
+        <?php } ?>
     <?php endforeach ?>
 <script src="<?= base_url('assets/js/jquery.min.js')?>"></script>
 <script src="<?= base_url('assets/js/bootstrap.min.js')?>"></script>

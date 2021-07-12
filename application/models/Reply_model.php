@@ -17,7 +17,7 @@ class Reply_model extends CI_Model {
                 ->join('users', 'users.id = reply.updated_by', 'left')
                 ->where('id_thread', $id)
                 ->get()
-                ->result();
+                ->row();
         return $query;
     }
     public function findReplyById($id) {

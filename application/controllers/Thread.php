@@ -8,6 +8,7 @@ class Thread extends CI_Controller {
         $this->load->model('thread_model');
         $this->load->model('pelajaran_model');
         $this->load->model('reply_model');
+        $this->load->model('comment_model');
         $this->load->database();
         $this->load->library(['ion_auth', 'form_validation']);
         $this->load->helper('url');
@@ -53,6 +54,12 @@ class Thread extends CI_Controller {
         $user = $this->ion_auth->user($thread->created_by)->result();
         $user_update = $this->ion_auth->user($thread->updated_by)->result();
         $reply = $this->reply_model->getReply($id);
+        foreach ($reply as $r) {
+            $comment = $this->comment_model->getComment($r->id);
+        foreach ($comment as $c) {
+            $subComment = $this->comment_model->getSubComment($r->id, $c->id);
+        }
+        }
 
         $data = array (
             'thread' => $thread,
@@ -61,6 +68,8 @@ class Thread extends CI_Controller {
             'user_update' => $user_update,
             'reply' => $reply,
             'reply_update' => $this->reply_model->getReplyUpdate($id),
+            'comment' => $comment,
+            'subComment' => $subComment,
             'layout' => $this->load->view('layout', NULL, TRUE),
         );
         $this->load->view('thread/thread_view', $data);
