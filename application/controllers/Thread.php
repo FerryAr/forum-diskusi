@@ -62,7 +62,6 @@ class Thread extends CI_Controller {
         }
         }
     }
-
         $data = array (
             'thread' => $thread,
             'pelajaran' => $pelajaran,
