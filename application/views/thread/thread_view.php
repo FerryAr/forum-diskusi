@@ -90,6 +90,7 @@ $submit = [
             </div>
             </div>
         <?php } ?>
+        <?php if(isset($comment)) {?>
         <?php foreach($comment as $c) { ?>
         <div class="container card mb-3" style="margin-top:10px; width:50%; margin-left: 40% ">
             <div class="card-body">
@@ -105,6 +106,8 @@ $submit = [
             </div>
         </div>
         <?php } ?>
+        <?php } ?>
+        <?php if(isset($subComment)) {?>
         <?php foreach($subComment as $sc) { ?>
         <div class="container card mb-3" style="margin-top:10px; width:35%; margin-left: 45% ">
             <div class="card-body">
@@ -119,6 +122,7 @@ $submit = [
                 </div>
             </div>
         </div>
+        <?php } ?>
         <?php } ?>
     <?php endforeach ?>
 <script src="<?= base_url('assets/js/jquery.min.js')?>"></script>

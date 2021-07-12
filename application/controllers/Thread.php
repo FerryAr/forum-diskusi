@@ -54,12 +54,14 @@ class Thread extends CI_Controller {
         $user = $this->ion_auth->user($thread->created_by)->result();
         $user_update = $this->ion_auth->user($thread->updated_by)->result();
         $reply = $this->reply_model->getReply($id);
+        if(!empty($reply)) {
         foreach ($reply as $r) {
             $comment = $this->comment_model->getComment($r->id);
         foreach ($comment as $c) {
             $subComment = $this->comment_model->getSubComment($r->id, $c->id);
         }
         }
+    }
 
         $data = array (
             'thread' => $thread,
@@ -68,10 +70,12 @@ class Thread extends CI_Controller {
             'user_update' => $user_update,
             'reply' => $reply,
             'reply_update' => $this->reply_model->getReplyUpdate($id),
-            'comment' => $comment,
-            'subComment' => $subComment,
             'layout' => $this->load->view('layout', NULL, TRUE),
         );
+        if(!empty($reply)) {
+            $data['comment'] = $comment;
+            $data['subComment'] = $subComment;
+        }
         $this->load->view('thread/thread_view', $data);
     }
     public function create() {
