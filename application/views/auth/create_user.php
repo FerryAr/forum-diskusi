@@ -50,11 +50,6 @@
             <?php echo lang('create_user_password_confirm_label', 'password_confirm');?> <br />
             <?php echo form_input($password_confirm);?>
       </p>
-      
-      <p>
-            <label for="avatar">Avatar</label>
-            <input type="file" name="avatar" accept="image/*" id="finput">
-      </p>
 
 
       <p><?php echo form_submit('submit', lang('create_user_submit_btn'));?></p>

@@ -52,7 +52,15 @@
                 </tr>
             </tbody>
             </table>
-
+            <?php if($user->id == $this->ion_auth->get_user_id()) {
+                //pass
+            } else { ?>
+            <div class="float-start mt-3">
+                <a class="btn btn-primary btn-md" href="<?= base_url('pesan/create/'.$user->id) ?>">Kirim Pesan</a>
+            </div>
+            <?php
+            }
+            ?>
         </div>
     </div>
 </div>

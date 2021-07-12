@@ -15,10 +15,9 @@ public function __construct()
     $this->load->helper('url');
 }
 
-public function create($id_thread)
+public function create()
 {
     $id_thread = $this->uri->segment(3);
-    $thread = $this->thread_model->findThreadById($id_thread);
     if($this->input->post()) {
         $id_user = $this->ion_auth->get_user_id();
         $isi = $this->input->post('isi');
@@ -27,12 +26,9 @@ public function create($id_thread)
         $this->reply_model->createReply($id_thread, $id_user, $isi, $created_at, $created_by);
 
         return redirect(base_url('thread/view/'.$id_thread));
+    } else {
+        redirect('404');
     }
-    $data = array (
-        'thread' => $thread,
-        'layout' => $this->load->view('layout', NULL, TRUE),
-    );
-    $this->load->view('reply/reply_create', $data);
 }
 public function edit($id)
 {

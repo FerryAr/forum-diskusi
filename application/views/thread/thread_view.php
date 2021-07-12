@@ -4,6 +4,23 @@
         'id_thread' => $thread->id,
         'id_user' => $user[0]->id,
     ];
+$hidden_data = [
+    'id_thread' => $thread->id,
+    'id_user' => $this->ion_auth->get_user_id(),
+    'created_at' => date('Y-m-d H:i:s'),
+    'created_by' => $this->ion_auth->get_user_id(),
+];
+$isi = [
+    'name' => 'isi',
+    'id' => 'isi',
+    'class' => 'form-control ckeditor',
+];
+$submit = [
+    'name' => 'submit',
+    'value' => 'Submit',
+    'type' => 'submit',
+    'class' => 'btn btn-secondary mt-3'
+];    
 ?>
 <div class="container">
 <div class="card mt-3">
@@ -22,9 +39,25 @@
         </div>
 
 </div>
+<?php if($this->ion_auth->logged_in()) { ?>
 <div style="margin-left:auto" class="mt-3">
-        <a class="btn btn-primary btn-md" href="<?= base_url('reply/create/'.$thread->id)?>">Buat Reply</a>
+	<button id="displayReply" class="btn btn-primary btn-md">Buat Reply</button>
+</div>
+<?php } ?>
+
+<div style="display:none" class="mt-3" id="createReply">
+<div class="container">
+        <?= form_open_multipart('reply/create/'.$thread->id) ?>
+        <?= form_hidden($hidden_data) ?>
+
+<?= form_textarea($isi) ?>
+
+            <?= form_submit($submit) ?>
+
+        <?= form_close() ?>
+
     </div>
+</div>
 </div>
 <hr/>
     <h1 class="text-center">REPLY</h1>
@@ -57,5 +90,19 @@
     <?php endforeach ?>
 <script src="<?= base_url('assets/js/jquery.min.js')?>"></script>
 <script src="<?= base_url('assets/js/bootstrap.min.js')?>"></script>
+<script src="<?= base_url('assets/js/jquery.min.js')?>"></script>
+    <script src="<?= base_url('assets/js/bootstrap.min.js')?>"></script>
+    <script src="<?= base_url('assets/ckeditor/ckeditor.js')?>"></script>
+    <script>
+		$(document).ready(function() {
+			$("#displayReply").click(function() {
+				$("#createReply").toggle("slow");
+			});
+		});
+        CKEDITOR.replace( 'isi', {
+            height: 300,
+            filebrowserUploadUrl: '<?php echo base_url('reply/upImage') ?>'
+        });
+    </script>
 </body>
 </html>

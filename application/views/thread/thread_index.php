@@ -11,10 +11,11 @@ $submit = [
 ];
 ?>
 <?= $layout ?>
-<h1>Threads</h1>
-<a href="<?= base_url('thread/create')?>" class="btn btn-primary">Buat Thread Baru</a>
-
-<?= form_open('thread/index', ['class'=>'form_inline'])?>
+<h1 class="mt-2">Threads</h1>
+<?php if($this->ion_auth->logged_in()) { ?>
+<a href="<?= base_url('thread/create')?>" class="btn btn-primary mt-3 mb-3 ms-1">Buat Thread Baru</a>
+<?php } ?>
+<?= form_open('thread/index', ['class'=>'row row-cols-lg-auto g-3 align-items-center mb-3 ms-1'])?>
 <div>
     <?= form_input($keyword); ?>
 </div>

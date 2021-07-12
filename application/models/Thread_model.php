@@ -9,8 +9,8 @@ class Thread_model extends CI_Model {
                 ->from('thread')
                 ->join('pelajaran', 'thread.id_pelajaran = pelajaran.id', 'left')
                 ->join('users', 'thread.created_by = users.id', 'left')
-                ->like('thread.isi', $keyword)
-                ->or_like('thread.judul', $keyword)
+                //->like('thread.isi', $keyword)
+                ->like('thread.judul', $keyword)
                 ->limit($limit, $offset)
                 ->get()->result();
         return $query;
@@ -20,8 +20,8 @@ class Thread_model extends CI_Model {
                     ->from('thread')
                     ->join('pelajaran', 'thread.id_pelajaran = pelajaran.id', 'left')
                     ->join('users', 'thread.created_by = users.id', 'left')
-                    ->like('thread.isi', $keyword)
-                    ->or_like('thread.judul', $keyword)
+                    //->like('thread.isi', $keyword)
+                    ->like('thread.judul', $keyword)
                     ->count_all_results();
         return $query;
     }
