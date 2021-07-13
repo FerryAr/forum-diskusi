@@ -72,8 +72,12 @@ class Thread extends CI_Controller {
             'layout' => $this->load->view('layout', NULL, TRUE),
         );
         if(!empty($reply)) {
-            $data['comment'] = $comment;
-            $data['subComment'] = $subComment;
+            if(!empty($comment)) {
+                $data['comment'] = $comment;
+            }
+            if(!empty($subComment)) {
+                $data['subComment'] = $subComment;
+            }
         }
         $this->load->view('thread/thread_view', $data);
     }
