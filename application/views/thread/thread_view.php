@@ -25,8 +25,16 @@ $submit = [
 <div class="container">
 <div class="card mt-3">
     <h1 class="card-title mt-3" style="text-align:center"><?= $thread->judul ?></h1>
-    <hr/>
+    <hr class="mb-auto"/>
     <div class="card-body">
+        <div class="float-end">
+            <?php if($thread->created_by == $this->ion_auth->get_user_id() || $this->ion_auth->is_admin()):?>
+                <a href="<?= base_url('thread/update/'.$thread->id) ?>"><i class="far fa-edit"></i></a>
+                |
+                <a href="<?= base_url('thread/delete/'.$thread->id) ?>"><i class="far fa-trash-alt"></i></a>
+            <?php endif; ?>
+        </div>
+        <br/><br/>
     <?= $thread->isi ?>
     <small>
         <br/>
@@ -87,12 +95,13 @@ $submit = [
                     <a href="<?= base_url('reply/edit/'.$r->id) ?>" style="color:#3498db" >Edit</a>
                     <a href="<?= base_url('reply/delete/'.$r->id.'/'.$thread->id) ?>" style="color:#c0392b">Delete</a>
                 </div>
-            </div>
-            </div>
         <?php } ?>
-        <?php if(isset($comment)) {?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    <?php if(isset($comment)) {?>
         <?php foreach($comment as $c) { ?>
-        <div class="container card mb-3" style="margin-top:10px; width:50%; margin-left: 40% ">
+        <div class="card mb-3" style="margin-top:10px; width:50%; margin-left: 40% ">
             <div class="card-body">
                 <div class="flex-container">
                     <div class="text-center">
@@ -124,7 +133,6 @@ $submit = [
         </div>
         <?php } ?>
         <?php } ?>
-    <?php endforeach ?>
 <script src="<?= base_url('assets/js/jquery.min.js')?>"></script>
 <script src="<?= base_url('assets/js/bootstrap.min.js')?>"></script>
 <script src="<?= base_url('assets/js/jquery.min.js')?>"></script>

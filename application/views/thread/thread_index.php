@@ -32,11 +32,6 @@ $submit = [
             <th>Judul</th>
             <th>Pelajaran</th>
             <th>Posted by</th>
-            <?php 
-            if($this->ion_auth->is_admin()) {
-                echo "<th>Action</th";
-            }
-            ?>
         </tr>
     </thead>
     <tbody>
@@ -49,12 +44,6 @@ $submit = [
                 </td>
                 <td><?= $thread->pelajaran ?></td>
                 <td><?= $thread->first_name ?></td>
-                <?php if ($this->ion_auth->is_admin()): ?>
-                    <td>
-                        <a class="btn btn-primary" href="<?= base_url('thread/update/'.$thread->id)?>">Update</a>
-                        <a class="btn btn-danger" href="<?= base_url('thread/delete/'.$thread->id)?>">Delete</a>
-                    </td>
-                <?php endif; ?>
             </tr>
         <?php endforeach; ?>
     </tbody>
