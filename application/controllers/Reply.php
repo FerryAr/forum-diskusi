@@ -30,6 +30,22 @@ public function create()
         redirect('404');
     }
 }
+public function reply()
+{
+    if($this->input->post()) {
+        $id_thread = $this->input->post('id_thread');
+        $id_user = $this->ion_auth->get_user_id();
+        $isi = $this->input->post('isi');
+        $created_at = date('Y-m-d H:i:s');
+        $created_by = $this->ion_auth->get_user_id();
+        $status = $this->input->post('status');
+        $this->reply_model->createSubReply($id_thread, $id_user, $isi, $created_at, $created_by, $status);
+
+        return redirect(base_url('thread/view/'.$id_thread));
+    } else {
+        redirect('404');
+    }
+}
 public function edit($id)
 {
     $id = $this->uri->segment(3);

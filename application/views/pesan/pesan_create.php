@@ -19,3 +19,13 @@
         <?= form_submit($submit) ?>
     <?= form_close() ?>
 </div>
+<script src="<?= base_url('assets/js/bootstrap.min.js')?>"></script>
+<script src="<?= base_url('assets/ckeditor/ckeditor.js')?>"></script>
+<script>
+    CKEDITOR.replace( 'pesan', {
+        height: 300,
+        filebrowserUploadUrl: '<?php echo base_url('pesan/upImage') ?>'
+    });
+</script>
+</body>
+</html>

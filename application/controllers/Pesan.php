@@ -94,6 +94,24 @@ public function create()
     );
     $this->load->view('pesan/pesan_create', $data);
 }
+public function upImage() {
+    if(isset($_FILES['upload']['name'])){
+        $file = $_FILES['upload']['tmp_name'];
+        $file_name = $_FILES['upload']['name'];
+        $file_name_array = explode(".", $file_name);
+        $extension = end($file_name_array);
+        $new_image_name = rand() . '.' . $extension;
+        $allowed_extension = array("jpg", "jpeg", "png","PNG","JPEG","JPG");
+        if(in_array($extension, $allowed_extension))
+        {
+            move_uploaded_file($file, './assets/images/pesan/' . $new_image_name);
+            $function_number = $_GET['CKEditorFuncNum'];
+            $url = base_url().'assets/images/pesan/' . $new_image_name;
+            $message = 'Paste url image ke tab Image Info : ';
+            echo "<script>alert('".$message.$url."');</script>";
+        }
+    }
+}
 }
         
     /* End of file  Pesan.php */

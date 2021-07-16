@@ -26,9 +26,9 @@
                 <td>
                     <?php 
                         if($pesan->is_read == 0) {
-                            echo "&#10060;";
+                            echo "<i class='fas fa-times'></i>";
                         } else {
-                            echo "&#10004;";
+                            echo "<i class='fas fa-check'></i>";
                         }
                     ?>
                 </td>

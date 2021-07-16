@@ -54,31 +54,36 @@ class Thread extends CI_Controller {
         $user = $this->ion_auth->user($thread->created_by)->result();
         $user_update = $this->ion_auth->user($thread->updated_by)->result();
         $reply = $this->reply_model->getReply($id);
-        if(!empty($reply)) {
-        foreach ($reply as $r) {
-            $comment = $this->comment_model->getComment($r->id);
-        foreach ($comment as $c) {
-            $subComment = $this->comment_model->getSubComment($r->id, $c->id);
-        }
-        }
-    }
+        //if(!empty($reply)) {
+        //foreach ($reply as $r) {
+            //$comment = $this->comment_model->getComment($r->id);
+        //foreach ($comment as $c) {
+            //$subComment = $this->comment_model->getSubComment($r->id, $c->id);
+        //}
+        //}
+        
+    //}
+        $data2 = array(
+            'thread' => $thread,
+            'reply' => $reply,
+            'reply_update' => $this->reply_model->getReplyUpdate($id),
+        );
         $data = array (
             'thread' => $thread,
             'pelajaran' => $pelajaran,
             'user' => $user,
             'user_update' => $user_update,
-            'reply' => $reply,
-            'reply_update' => $this->reply_model->getReplyUpdate($id),
             'layout' => $this->load->view('layout', NULL, TRUE),
+            'reply_view' => $this->load->view('reply/reply_view', $data2, TRUE),
         );
-        if(!empty($reply)) {
+        /*if(!empty($reply)) {
             if(!empty($comment)) {
                 $data['comment'] = $comment;
             }
             if(!empty($subComment)) {
                 $data['subComment'] = $subComment;
             }
-        }
+        }*/
         $this->load->view('thread/thread_view', $data);
     }
     public function create() {
