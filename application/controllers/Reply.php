@@ -8,7 +8,6 @@ public function __construct()
 {
     parent::__construct();
     $this->load->model('thread_model');
-    $this->load->model('pelajaran_model');
     $this->load->model('reply_model');
     $this->load->database();
     $this->load->library(['ion_auth', 'form_validation']);
@@ -17,20 +16,40 @@ public function __construct()
 
 public function create()
 {
-    $id_thread = $this->uri->segment(3);
     if($this->input->post()) {
+        $id_thread = $this->input->post('id_thread');
         $id_user = $this->ion_auth->get_user_id();
         $isi = $this->input->post('isi');
         $created_at = date('Y-m-d H:i:s');
         $created_by = $this->ion_auth->get_user_id();
         $this->reply_model->createReply($id_thread, $id_user, $isi, $created_at, $created_by);
 
-        return redirect(base_url('thread/view/'.$id_thread));
+        echo "Komen berhasil ditambahkan!";
     } else {
         redirect('404');
     }
 }
-public function reply()
+public function read()
+{
+    if($this->input->post('show_reply')) {
+        $arrReply = [];
+        $id = $this->input->post('id');
+        $reply = $this->reply_model->getReply($id);
+        foreach($reply as $r) {
+            $id = $r['id'];
+            $first_name = $r['first_name'];
+            $created_at = $r['created_at'];
+            $isi = $r['isi'];
+
+            array_push($arrReply, ['id' => $id, 'first_name' => $first_name, 'created_at' => $created_at, 'isi' => $isi]);
+        }
+        header('Content-type: application/json');
+        echo json_encode($arrReply);
+    } else {
+        echo "Komen Kosong";
+    }
+}
+/*public function reply()
 {
     if($this->input->post()) {
         $id_thread = $this->input->post('id_thread');
@@ -45,7 +64,7 @@ public function reply()
     } else {
         redirect('404');
     }
-}
+}*/
 public function edit($id)
 {
     $id = $this->uri->segment(3);

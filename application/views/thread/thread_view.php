@@ -1,6 +1,6 @@
 <?= $layout ?>
 <?php
-    $hidden = [
+    /*$hidden = [
         'id_thread' => $thread->id,
         'id_user' => $user[0]->id,
     ];
@@ -36,10 +36,19 @@ $submit = [
     'value' => 'Submit',
     'type' => 'submit',
     'class' => 'btn btn-secondary mt-3'
-];
+];*/
 $CI =& get_instance();
 $CI->load->model('reply_model');
+
 ?>
+<div id='preloader'>
+<div id='container' class='spinner'>
+  <div id='dot'></div>
+    <div class='step' id='s1'></div>
+    <div class='step' id='s2'></div>
+    <div class='step' id='s3'></div>
+</div>
+</div>
 <div class="container">
 <div class="card mt-3">
     <h1 class="card-title mt-3" style="text-align:center"><?= $thread->judul ?></h1>
@@ -65,187 +74,197 @@ $CI->load->model('reply_model');
         </div>
 
 </div>
+<div id="error"></div>
 <?php if($this->ion_auth->logged_in()) { ?>
 <div style="margin-left:auto" class="mt-3">
-	<button id="displayReply" class="btn btn-primary btn-md">Buat Reply</button>
+	<button id="displayReply" class="btn btn-primary btn-md text-center">Buat Reply</button>
 </div>
 <?php } ?>
-
 <div style="display:none" class="mt-3" id="createReply">
 <div class="container">
-        <?= form_open_multipart('reply/create/'.$thread->id) ?>
-        <?= form_hidden($hidden_data) ?>
-
-<?= form_textarea($isi) ?>
-
-            <?= form_submit($submit) ?>
-
-        <?= form_close() ?>
-
+        <input type="hidden" id="csrf" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $csrf_hash ?>"/>
+        <textarea id="isi" class="form-control mb-3" name="isi"></textarea>
+        <button id="create" class="btn btn-secondary btn-md">Submit</button>
     </div>
 </div>
 </div>
 <hr/>
     <h1 class="text-center">REPLY</h1>
     <hr>
-    <?php foreach($reply as $r): ?>
-        <div class="container card mb-3" style="margin-top:10px">
-        <div class="card-body">
-            <div class="flex-container">
-                <div style="text-align:center">
-                    <small><strong><?= $r->first_name ?></strong></small><br>                
-                    <small><?= $r->created_at ?></small>
-                </div>
-                <div style="margin-left:30px" class="mt-3">
-                    <?= $r->isi ?>
-                </div>
-            </div>
-            <?php if($this->ion_auth->logged_in()) { ?>
-                <div class="float-start mx-2">
-                    <button id="displaySubReply" class="btn btn-secondary btn-sm">Balas</button>
-                    <div style="display:none" class="mt-3" id="createSubReply">
-                        <?= form_open_multipart('reply/reply/'.$r->id) ?>
-                            <?= form_hidden($hidden_data) ?>
+    <div id="reply" class="text-center">
+        <button id="show" class="btn btn-primary btn-md mt-3 mb-3">Tampilkan Komentar</button>
+    </div>
 
-                            <?= form_textarea($isi_balasan) ?>
-
-                            <?= form_hidden('status', $r->id) ?>
-                            
-                            <?= form_submit($submit) ?>
-
-                            <?= form_close() ?>
-
-                        </div>
-                    <?php if(!empty($reply_update->updated_at)) { ?>
-                    <?php foreach($reply_update as $r_up): ?>
-                        <small> | Updated by <a href="<?= base_url('user/view/'.$r_up->id)?>"></a><?= $r_up->first_name ?> at <?= $r_up->updated_at ?>. Alasan : <?= $r_up->reason ?></small>
-                    <?php endforeach; ?>
-                    <?php } ?>
-                </div>
-                <div class="float-end mx-2">
-                    <a href="<?= base_url('reply/edit/'.$r->id) ?>" style="color:#3498db" >Edit</a>
-                    <a href="<?= base_url('reply/delete/'.$r->id.'/'.$thread->id) ?>" style="color:#c0392b">Delete</a>
-                </div>
-        <?php } ?>
-            </div>
-        </div>
-        <?php 
-            foreach($CI->reply_model->getSubReply($r->id, $thread->id) as $balasan):
-        ?>
-        <div class="container">
-            <div class="card mb-3" style="margin-top:10px; margin-left:40%;">
-                <div class="card-body">
-                    <div class="flex-container">
-                        <div class="text-center">
-                            <small><strong> <?= $balasan->first_name ?></strong></small><br/>
-                            <small><?= $balasan->created_at ?></small>
-                        </div>
-                        <div style="margin-left:30px" class="mt-3">
-                            <?= $balasan->isi ?>
-                        </div>
-                    </div>
-                    <?php if($this->ion_auth->logged_in()) { ?>
-                <div class="float-start mx-2">
-                    <button id="displaySubSubReply" class="btn btn-secondary btn-sm">Balas</button>
-                    <div style="display:none" class="mt-3" id="createSubSubReply">
-                        <?= form_open_multipart('reply/reply/'.$balasan->id) ?>
-                            <?= form_hidden($hidden_data) ?>
-
-                            <?= form_textarea($isi_balasbalasan) ?>
-
-                            <?= form_hidden('status', $balasan->id) ?>
-                            
-                            <?= form_submit($submit) ?>
-
-                            <?= form_close() ?>
-
-                        </div>
-                    <?php if(!empty($reply_update->updated_at)) { ?>
-                    <?php foreach($reply_update as $r_up): ?>
-                        <small> | Updated by <a href="<?= base_url('user/view/'.$r_up->id)?>"></a><?= $r_up->first_name ?> at <?= $r_up->updated_at ?>. Alasan : <?= $r_up->reason ?></small>
-                    <?php endforeach; ?>
-                    <?php } ?>
-                </div>
-                <div class="float-end mx-2">
-                    <a href="<?= base_url('reply/edit/'.$balasan->id) ?>" style="color:#3498db" >Edit</a>
-                    <a href="<?= base_url('reply/delete/'.$balasan->id.'/'.$thread->id) ?>" style="color:#c0392b">Delete</a>
-                </div>
-        <?php } ?>
-                </div>
-            </div>
-        </div>
-        <?php
-            foreach($CI->reply_model->getSubReply($balasan->id, $thread->id) as $balasanbalas):
-        ?>
-        <div class="container">
-            <div class="card mb-3" style="margin-top:10px; margin-left:50%;">
-                <div class="card-body">
-                    <div class="flex-container">
-                        <div class="text-center">
-                            <small><strong> <?= $balasanbalas->first_name ?></strong></small><br/>
-                            <small><?= $balasanbalas->created_at ?></small>
-                        </div>
-                        <div style="margin-left:30px" class="mt-3">
-                            <?= $balasanbalas->isi ?>
-                        </div>
-                    </div>
-                    <?php if($this->ion_auth->logged_in()) { ?>
-                <div class="float-start mx-2">
-                    <button id="displayComment" class="btn btn-secondary btn-sm">Balas</button>
-                    <?php if(!empty($reply_update->updated_at)) { ?>
-                    <?php foreach($reply_update as $r_up): ?>
-                        <small> | Updated by <a href="<?= base_url('user/view/'.$r_up->id)?>"></a><?= $r_up->first_name ?> at <?= $r_up->updated_at ?>. Alasan : <?= $r_up->reason ?></small>
-                    <?php endforeach; ?>
-                    <?php } ?>
-                </div>
-                <div class="float-end mx-2">
-                    <a href="<?= base_url('reply/edit/'.$balasan->id) ?>" style="color:#3498db" >Edit</a>
-                    <a href="<?= base_url('reply/delete/'.$balasan->id.'/'.$thread->id) ?>" style="color:#c0392b">Delete</a>
-                </div>
-        <?php } ?>
-                </div>
-            </div>
-        </div>
-        <?php
-            endforeach;
-        ?>
-        <?php
-            endforeach;
-        ?>
-    <?php endforeach; ?>
-<script src="<?= base_url('assets/js/jquery.min.js')?>"></script>
-<script src="<?= base_url('assets/js/bootstrap.min.js')?>"></script>
-<script src="<?= base_url('assets/js/jquery.min.js')?>"></script>
+    <script src="<?= base_url('assets/js/jquery.min.js')?>"></script>
     <script src="<?= base_url('assets/js/bootstrap.min.js')?>"></script>
-    <script src="<?= base_url('assets/ckeditor/ckeditor.js')?>"></script>
     <script>
-		$(document).ready(function() {
-			$("#displayReply").click(function() {
-				$("#createReply").toggle("slow");
-			});
-		});
-        CKEDITOR.replace( 'isi', {
-            height: 300,
-            filebrowserUploadUrl: '<?php echo base_url('reply/upImage') ?>'
+	$(document).ready(function () {
+        $("#preloader").fadeOut();
+        $("#displayReply").click(function() {
+            $("#createReply").toggle("slow");
         });
-        $(document).ready(function() {
-			$("#displaySubReply").click(function() {
-				$("#createSubReply").toggle("slow");
-			});
-		});
-        CKEDITOR.replace( 'isi_balasan', {
-            height: 300,
-            filebrowserUploadUrl: '<?php echo base_url('reply/upImage') ?>'
+        $('#create').click(function (e) { 
+            e.preventDefault();
+            let isi = $('#isi').val();
+            if($.trim(isi).length == 0) {
+                err = "Isi Komen dulu ngab";
+                $('#error').text(err);
+            } else {
+                err = '';
+                $('#error').text(err);
+            }
+
+            if (err != '') {
+                return false;
+            } else {
+                let csrfName = $('#csrf').attr("name");
+                let csrfHash = $('#csrf').val();
+                let data = {
+                    [csrfName]: csrfHash,
+                    'id_thread': <?= $thread->id ?>,
+                    'isi': isi,
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "<?= base_url('reply/create') ?>",
+                    data: data,
+                    success: function (response) {
+                        alert(response);
+                    }
+                });
+            }
         });
-        $(document).ready(function() {
-			$("#displaySubSubReply").click(function() {
-				$("#createSubSubReply").toggle("slow");
-			});
-		});
-        CKEDITOR.replace( 'isi_balasbalasan', {
-            height: 300,
-            filebrowserUploadUrl: '<?php echo base_url('reply/upImage') ?>'
+        function load_comment() {
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('reply/read') ?>",
+                data: {
+                    '<?= $this->security->get_csrf_token_name() ?>': '<?= $csrf_hash ?>',
+                    'show_reply': true,
+                    'id': <?= $thread->id ?>,
+                },
+                success: function (response) {
+                    $('#reply').html("");
+                    $.each(response, function (key, value) {
+                        $('#reply').append('<div id="begin" class="container card mb-3" style="margin-top:10px">\
+                            <div class="card-body">\
+                                <div class="flex-container">\
+                                    <div style="text-align:center">\
+                                        <small><strong>'+value.first_name+'</strong></small><br>\
+                                        <small>'+value.created_at +'</small>\
+                                    </div>\
+                                <div id="isi" style="margin-left:30px" class="mt-3">\
+                                    '+value.isi+'\
+                                </div>\
+                            </div>\
+                            <?php if($this->ion_auth->logged_in()):?>
+                                <div class="float-start mt-2 mb-2">\
+                                    <button value="'+value.id+'" id="displaySubReply" class="btn btn-secondary btn-sm">Balas</button>\
+                                    <button value="'+value.id+'" id="view_reply" class="btn btn-info btn-sm">Lihat Balasan</button>\
+                                </div>\
+                            <?php endif; ?>
+                                </div>\
+                                <div id="after">\
+                                </div>\
+                            </div>\
+                            <div id="sub"></div>\
+                        ');
+                    });
+                },
+                error : function(jqXHR,textStatus,errorThrown) {
+                    console.log(textStatus);
+                }
+            });
+        }
+        $(document).on('click','#show', function () {
+                load_comment();
+            });
+        $(document).on('click', '#displaySubReply', function() {
+            let click = $(this);
+            let id = click;
+
+            $('#after').html('');
+            click.closest('#begin').find('#after').append('\
+                <input type="text" class="form-control my-2" id="isi_balasan" placeholder="Balas">\
+                    <div class="text-end">\
+                    <button class="btn btn-sm btn-primary" id="btn_tambah_reply">Reply</button>\
+                    <button class="btn btn-sm btm-danger" id="cancel_reply">Cancel</button>\
+                    </div>\
+            ');
         });
+        $(document).on('click', '#cancel_reply', function () {
+            let click = $(this);
+            let id = click;
+            $('#after').html('');
+            click.closest('#begin').find('#after').html('');
+        });
+        $(document).on('click', '#btn_tambah_reply', function (e) {
+            e.preventDefault();
+            let click = $(this);
+            let id = click.closest('#begin').find('#displaySubReply').val();
+            let isi = click.closest('#begin').find('#isi_balasan').val();
+            console.log(id);
+            console.log(isi);
+            let data = {
+                '<?= $this->security->get_csrf_token_name() ?>': '<?= $csrf_hash ?>',
+                'id': id,
+                'isi':isi,
+                'add_reply': true,
+            };
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('comment/create') ?>",
+                data: data,
+                success: function (response) {
+                    alert(response);
+                }
+            });
+        });
+        $(document).on('click', '#view_reply', function (e) {
+            e.preventDefault();
+            let click = $(this);
+            let id = click.val();
+            let data = {
+                '<?= $this->security->get_csrf_token_name() ?>': '<?= $csrf_hash ?>',
+                'id': id,
+                'show_sub_reply': true,
+            };
+            $('#after').html('');
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('comment/read') ?>",
+                data: data,
+                success: function (response) {
+                    $.each(response, function (key, value) {
+                        $("#sub").append('<div class="container card mb-3" style="margin-top:10px; width:45%;margin-left:50%">\
+                            <div class="card-body">\
+                                <div class="card-body">\
+                                <div class="flex-container">\
+                                    <div style="text-align:center">\
+                                        <small><strong>'+value.first_name+'</strong></small><br>\
+                                        <small>'+value.created_at+'</small>\
+                                    </div>\
+                                <div id="isi" style="margin-left:30px" class="mt-3">\
+                                    '+value.isi+'\
+                                </div>\
+                            </div>\
+                            <?php if($this->ion_auth->logged_in()):?>
+                                <div class="float-start mt-2 mb-2">\
+                                    <button id="displaySubReply" class="btn btn-secondary btn-sm">Balas</button>\
+                                </div>\
+                            <?php endif; ?>
+                                </div>\
+                                <div id="after">\
+                                </div>\
+                            </div>\
+                            </div>\
+                            </div>\
+                            ');
+                    });
+                }
+            });
+        });
+    });
     </script>
 </body>
 </html>

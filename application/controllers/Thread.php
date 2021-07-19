@@ -53,7 +53,6 @@ class Thread extends CI_Controller {
         $pelajaran = $this->pelajaran_model->findPelById($thread->id_pelajaran);
         $user = $this->ion_auth->user($thread->created_by)->result();
         $user_update = $this->ion_auth->user($thread->updated_by)->result();
-        $reply = $this->reply_model->getReply($id);
         //if(!empty($reply)) {
         //foreach ($reply as $r) {
             //$comment = $this->comment_model->getComment($r->id);
@@ -63,19 +62,14 @@ class Thread extends CI_Controller {
         //}
         
     //}
-        $data2 = array(
-            'thread' => $thread,
-            'reply' => $reply,
-            'reply_update' => $this->reply_model->getReplyUpdate($id),
-        );
         $data = array (
             'thread' => $thread,
             'pelajaran' => $pelajaran,
             'user' => $user,
             'user_update' => $user_update,
             'layout' => $this->load->view('layout', NULL, TRUE),
-            'reply_view' => $this->load->view('reply/reply_view', $data2, TRUE),
         );
+        $data['csrf_hash'] = $this->security->get_csrf_hash();
         /*if(!empty($reply)) {
             if(!empty($comment)) {
                 $data['comment'] = $comment;

@@ -3,16 +3,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Reply_model extends CI_Model {
     public function getReply($id) {
-        $query = $this->db->select('reply.id, reply.isi, reply.created_at, users.first_name ')
-                ->from('reply')
+        $query = $this->db->select('reply.id, reply.isi, reply.created_at, reply.updated_at, reply.reason, users.first_name ')
+                ->from('reply', 'users')
                 ->join('users', 'users.id = reply.id_user', 'left')
                 ->where('status =', NULL)
                 ->where('id_thread', $id)
-                ->get()
-                ->result();
+                ->get()->result_array();
         return $query;
     }
-    public function getReplyUpdate($id) {
+    /*public function getReplyUpdate($id) {
         $query = $this->db->select('reply.id, reply.isi, reply.updated_at, reply.reason, users.first_name ')
                 ->from('reply')
                 ->join('users', 'users.id = reply.updated_by', 'left')
@@ -31,7 +30,7 @@ class Reply_model extends CI_Model {
                     ->get()
                     ->result();
         return $query;
-    }
+    }*/
     public function findReplyById($id) {
         $query = $this->db->select('*')
                 ->from('reply')
