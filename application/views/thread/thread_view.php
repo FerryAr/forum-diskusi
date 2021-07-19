@@ -166,8 +166,8 @@ $CI->load->model('reply_model');
                                 </div>\
                                 <div id="after">\
                                 </div>\
+                                <div id="sub"></div>\
                             </div>\
-                            <div id="sub"></div>\
                         ');
                     });
                 },
@@ -184,9 +184,11 @@ $CI->load->model('reply_model');
             let id = click;
 
             $('#after').html('');
-            click.closest('#begin').find('#after').append('\
+            click.closest('#begin').find('#view_reply').prop('disabled', false);
+            click.closest('#begin').find('#sub').html('');
+            click.closest('#begin').find('#after').html('\
                 <input type="text" class="form-control my-2" id="isi_balasan" placeholder="Balas">\
-                    <div class="text-end">\
+                    <div class="text-end mb-4 mt-3">\
                     <button class="btn btn-sm btn-primary" id="btn_tambah_reply">Reply</button>\
                     <button class="btn btn-sm btm-danger" id="cancel_reply">Cancel</button>\
                     </div>\
@@ -203,8 +205,6 @@ $CI->load->model('reply_model');
             let click = $(this);
             let id = click.closest('#begin').find('#displaySubReply').val();
             let isi = click.closest('#begin').find('#isi_balasan').val();
-            console.log(id);
-            console.log(isi);
             let data = {
                 '<?= $this->security->get_csrf_token_name() ?>': '<?= $csrf_hash ?>',
                 'id': id,
@@ -220,21 +220,20 @@ $CI->load->model('reply_model');
                 }
             });
         });
-        $(document).on('click', '#view_reply', function (e) {
-            e.preventDefault();
-            let click = $(this);
-            let id = click.val();
+        /*function load_subcomment() {
+            let id = $('#view_reply').val();
             let data = {
                 '<?= $this->security->get_csrf_token_name() ?>': '<?= $csrf_hash ?>',
                 'id': id,
                 'show_sub_reply': true,
             };
-            $('#after').html('');
+            $('#sub').append('');
             $.ajax({
                 type: "POST",
                 url: "<?= base_url('comment/read') ?>",
                 data: data,
                 success: function (response) {
+                    $('#view_reply').hide();
                     $.each(response, function (key, value) {
                         $("#sub").append('<div class="container card mb-3" style="margin-top:10px; width:45%;margin-left:50%">\
                             <div class="card-body">\
@@ -263,7 +262,57 @@ $CI->load->model('reply_model');
                     });
                 }
             });
+        }*/
+        $(document).on('click', '#view_reply', function() {
+            let click = $(this);
+            let id = click.val();
+
+            let data = {
+                '<?= $this->security->get_csrf_token_name() ?>': '<?= $csrf_hash ?>',
+                'id': id,
+                'show_sub_reply': true,
+            };
+            click.closest('#begin').find('#sub').html('');
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('comment/read') ?>",
+                data: data,
+                success: function (response) {
+                    click.prop('disabled', true);
+                    click.closest('#begin').find('#after').html('');
+                    $.each(response, function (key, value) {
+                        click.closest('#begin').find('#sub').append('<div class="container card mb-3" style="margin-top:10px; width:45%;margin-left:50%">\
+                                <div class="card-body">\
+                                <div class="flex-container">\
+                                    <div style="text-align:center">\
+                                        <small><strong>'+value.first_name+'</strong></small><br>\
+                                        <small>'+value.created_at+'</small>\
+                                    </div>\
+                                <div id="isi" style="margin-left:30px" class="mt-3">\
+                                    '+value.isi+'\
+                                </div>\
+                            </div>\
+                            <?php if($this->ion_auth->logged_in()):?>
+                                <div class="float-start mt-2 mb-2">\
+                                    <button id="displaySubReply" class="btn btn-secondary btn-sm">Balas</button>\
+                                </div>\
+                            <?php endif; ?>
+                                </div>\
+                                <div id="after">\
+                                </div>\
+                            </div>\
+                            </div>\
+                            </div>\
+                            ');
+                    });
+                }
+            });
         });
+        /*$(document).on('click','#view_reply', function () {
+            let click = $(this);
+            console.log(click.val());
+                load_subcomment(click.val());
+        });*/
     });
     </script>
 </body>
