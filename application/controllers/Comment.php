@@ -37,9 +37,6 @@ public function read()
         $arrReply = [];
         $id = $this->input->post('id');
         $comment = $this->comment_model->getComment($id);
-        if(empty($comment)) {
-            echo "kosong";
-        }
         foreach($comment as $c) {
             $id = $c['id'];
             $first_name = $c['first_name'];
@@ -49,9 +46,12 @@ public function read()
             array_push($arrReply, ['id' => $id, 'first_name' => $first_name, 'created_at' => $created_at, 'isi' => $isi]);
         }
         header('Content-type: application/json');
+        if(empty($arrReply)) {
+            echo "Tidak ada balasan";
+        }
         echo json_encode($arrReply);
     } else {
-        echo "Komen Kosong";
+        redirect('404');
     }
 }
         

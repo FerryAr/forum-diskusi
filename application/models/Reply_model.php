@@ -6,7 +6,6 @@ class Reply_model extends CI_Model {
         $query = $this->db->select('reply.id, reply.isi, reply.created_at, reply.updated_at, reply.reason, users.first_name ')
                 ->from('reply', 'users')
                 ->join('users', 'users.id = reply.id_user', 'left')
-                ->where('status =', NULL)
                 ->where('id_thread', $id)
                 ->get()->result_array();
         return $query;

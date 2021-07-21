@@ -197,8 +197,8 @@ $CI->load->model('reply_model');
         $(document).on('click', '#cancel_reply', function () {
             let click = $(this);
             let id = click;
-            $('#after').html('');
-            click.closest('#begin').find('#after').html('');
+            $('#after').append('');
+            click.closest('#begin').find('#after').append('');
         });
         $(document).on('click', '#btn_tambah_reply', function (e) {
             e.preventDefault();
@@ -294,11 +294,11 @@ $CI->load->model('reply_model');
                             </div>\
                             <?php if($this->ion_auth->logged_in()):?>
                                 <div class="float-start mt-2 mb-2">\
-                                    <button id="displaySubReply" class="btn btn-secondary btn-sm">Balas</button>\
+                                    <button id="displaySubsubReply" class="btn btn-secondary btn-sm">Balas</button>\
                                 </div>\
                             <?php endif; ?>
                                 </div>\
-                                <div id="after">\
+                                <div id="aftersub">\
                                 </div>\
                             </div>\
                             </div>\
@@ -308,11 +308,45 @@ $CI->load->model('reply_model');
                 }
             });
         });
-        /*$(document).on('click','#view_reply', function () {
+        $(document).on('click', '#displaySubsubReply', function() {
             let click = $(this);
-            console.log(click.val());
-                load_subcomment(click.val());
-        });*/
+            let id = click;
+
+            $('#aftersub').append('');
+            click.closest('#begin').find('#aftersub').html('\
+                <input type="text" class="form-control my-2" id="isi_balasbalasan" placeholder="Balas">\
+                    <div class="text-end mb-4 mt-3">\
+                    <button class="btn btn-sm btn-primary" id="btn_tambah_subreply">Reply</button>\
+                    <button class="btn btn-sm btm-danger" id="cancel_subreply">Cancel</button>\
+                    </div>\
+            ');
+        });
+        $(document).on('click', '#cancel_subreply', function () {
+            let click = $(this);
+            let id = click;
+            $('#aftersub').append('');
+            click.closest('#begin').find('#aftersub').append('');
+        });
+        $(document).on('click', '#btn_tambah_subreply', function (e) {
+            e.preventDefault();
+            let click = $(this);
+            let id = click.closest('#begin').find('#displaySubReply').val();
+            let isi = click.closest('#begin').find('#isi_balasbalasan').val();
+            let data = {
+                '<?= $this->security->get_csrf_token_name() ?>': '<?= $csrf_hash ?>',
+                'id': id,
+                'isi':isi,
+                'add_reply': true,
+            };
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('comment/create') ?>",
+                data: data,
+                success: function (response) {
+                    alert(response);
+                }
+            });
+        });
     });
     </script>
 </body>
