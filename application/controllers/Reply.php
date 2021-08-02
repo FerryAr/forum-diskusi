@@ -37,11 +37,12 @@ public function read()
         $reply = $this->reply_model->getReply($id);
         foreach($reply as $r) {
             $id = $r['id'];
+            $avatar = $r['avatar'];
             $first_name = $r['first_name'];
             $created_at = $r['created_at'];
             $isi = $r['isi'];
 
-            array_push($arrReply, ['id' => $id, 'first_name' => $first_name, 'created_at' => $created_at, 'isi' => $isi]);
+            array_push($arrReply, ['id' => $id, 'avatar' => $avatar, 'first_name' => $first_name, 'created_at' => $created_at, 'isi' => $isi]);
         }
         header('Content-type: application/json');
         echo json_encode($arrReply);

@@ -5,6 +5,7 @@
         <h1 class="card-title text-center mt-3 mb-4">Halaman Profil</h1>
         <hr/>
         <div class="col-md-4 card-body">
+            <img class="mb-3" src="<?= base_url('assets/images/avatars/').$user->avatar ?>" style="width:250px"></img>
             <table width="100%" border=0>
                 <tbody>
                 <tr>

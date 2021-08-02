@@ -129,7 +129,8 @@ $CI->load->model('reply_model');
                     url: "<?= base_url('reply/create') ?>",
                     data: data,
                     success: function (response) {
-                        alert(response);
+                        
+                        load_comment();
                     }
                 });
             }
@@ -146,10 +147,12 @@ $CI->load->model('reply_model');
                 success: function (response) {
                     $('#reply').html("");
                     $.each(response, function (key, value) {
+                        console.log(value);
                         $('#reply').append('<div id="begin" class="container card mb-3" style="margin-top:10px">\
                             <div class="card-body">\
                                 <div class="flex-container">\
                                     <div style="text-align:center">\
+                                    <img style="width:50px" src="<?= base_url('assets/images/avatars/')?>'+value.avatar+'"></img><br/>\
                                         <small><strong>'+value.first_name+'</strong></small><br>\
                                         <small>'+value.created_at +'</small>\
                                     </div>\
@@ -190,16 +193,22 @@ $CI->load->model('reply_model');
                 <input type="text" class="form-control my-2" id="isi_balasan" placeholder="Balas">\
                     <div class="text-end mb-4 mt-3">\
                     <button class="btn btn-sm btn-primary" id="btn_tambah_reply">Reply</button>\
-                    <button class="btn btn-sm btm-danger" id="cancel_reply">Cancel</button>\
+                    <button class="btn btn-sm btm-danger cancel" id="cancel_reply">Cancel</button>\
                     </div>\
             ');
-        });
-        $(document).on('click', '#cancel_reply', function () {
+            $(document).on('click', '.cancel', function () {
             let click = $(this);
             let id = click;
             $('#after').append('');
-            click.closest('#begin').find('#after').append('');
+            click.closest('#begin').find('#after').html('');
         });
+        });
+        // $(document).on('click', '#cancel_reply', function () {
+        //     let click = $(this);
+        //     let id = click;
+        //     $('#after').append('');
+        //     click.closest('#begin').find('#after').append('');
+        // });
         $(document).on('click', '#btn_tambah_reply', function (e) {
             e.preventDefault();
             let click = $(this);
@@ -285,6 +294,7 @@ $CI->load->model('reply_model');
                                 <div class="card-body">\
                                 <div class="flex-container">\
                                     <div style="text-align:center">\
+                                    <img style="width:50px" src="<?= base_url('assets/images/avatars/')?>'+value.avatar+'"></img><br/>\
                                         <small><strong>'+value.first_name+'</strong></small><br>\
                                         <small>'+value.created_at+'</small>\
                                     </div>\
@@ -294,7 +304,7 @@ $CI->load->model('reply_model');
                             </div>\
                             <?php if($this->ion_auth->logged_in()):?>
                                 <div class="float-start mt-2 mb-2">\
-                                    <button id="displaySubsubReply" class="btn btn-secondary btn-sm">Balas</button>\
+                                    <button id="displaySubsubReply" class="btn btn-secondary btn-sm btn-rep">Balas</button>\
                                 </div>\
                             <?php endif; ?>
                                 </div>\
@@ -304,16 +314,17 @@ $CI->load->model('reply_model');
                             </div>\
                             </div>\
                             ');
+                            
                     });
                 }
             });
         });
-        $(document).on('click', '#displaySubsubReply', function() {
+        $(document).on('click', '.btn-rep', function() {
             let click = $(this);
             let id = click;
 
             $('#aftersub').append('');
-            click.closest('#begin').find('#aftersub').html('\
+            click.parent().parent().parent().find('#aftersub').html('\
                 <input type="text" class="form-control my-2" id="isi_balasbalasan" placeholder="Balas">\
                     <div class="text-end mb-4 mt-3">\
                     <button class="btn btn-sm btn-primary" id="btn_tambah_subreply">Reply</button>\
@@ -325,7 +336,7 @@ $CI->load->model('reply_model');
             let click = $(this);
             let id = click;
             $('#aftersub').append('');
-            click.closest('#begin').find('#aftersub').append('');
+            click.parent().parent().parent().find('#aftersub').html('');
         });
         $(document).on('click', '#btn_tambah_subreply', function (e) {
             e.preventDefault();

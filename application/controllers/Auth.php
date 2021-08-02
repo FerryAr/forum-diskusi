@@ -463,7 +463,7 @@ class Auth extends CI_Controller
 	{
 		$this->data['title'] = $this->lang->line('create_user_heading');
 
-		if ($this->ion_auth->logged_in())
+		if (!$this->ion_auth->logged_in())
 		{
 			redirect('auth', 'refresh');
 		}
@@ -494,10 +494,28 @@ class Auth extends CI_Controller
 			$email = strtolower($this->input->post('email'));
 			$identity = ($identity_column === 'email') ? $email : $this->input->post('identity');
 			$password = $this->input->post('password');
+			$config['upload_path'] = './assets/images/avatars';
+        	$config['file_ext_tolower']     = TRUE;
+        	$config['allowed_types']        = 'gif|jpg|png';
+        	$config['max_size']             = 100;
+        	$config['max_width']            = 1024;
+        	$config['max_height']           = 768;
+        	$this->load->library('upload', $config);
 
+        	if (!$this->upload->do_upload('userfile'))
+        	{
+                $error = array('error' => $this->upload->display_errors());
+                print_r($error);
+                $file_name = null;
+        	}
+        	else
+        	{
+                $file_name = $this->upload->data('file_name');
+        	}
 			$additional_data = [
 				'first_name' => $this->input->post('first_name'),
 				'last_name' => $this->input->post('last_name'),
+				'avatar' =>  $file_name,
 				'company' => $this->input->post('company'),
 				'phone' => $this->input->post('phone'),
 			];
@@ -623,9 +641,28 @@ class Auth extends CI_Controller
 
 			if ($this->form_validation->run() === TRUE)
 			{
+				$config['upload_path'] = './assets/images/avatars';
+        	$config['file_ext_tolower']     = TRUE;
+        	$config['allowed_types']        = 'gif|jpg|png';
+        	$config['max_size']             = 100;
+        	$config['max_width']            = 1024;
+        	$config['max_height']           = 768;
+        	$this->load->library('upload', $config);
+
+        	if (!$this->upload->do_upload('userfile'))
+        	{
+                $error = array('error' => $this->upload->display_errors());
+                print_r($error);
+                $file_name = null;
+        	}
+        	else
+        	{
+                $file_name = $this->upload->data('file_name');
+        	}
 				$data = [
 					'first_name' => $this->input->post('first_name'),
 					'last_name' => $this->input->post('last_name'),
+					'avatar' => $file_name,
 					'company' => $this->input->post('company'),
 					'phone' => $this->input->post('phone'),
 				];

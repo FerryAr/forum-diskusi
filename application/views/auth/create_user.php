@@ -6,7 +6,7 @@
 
 <div id="infoMessage"><?php echo $message;?></div>
       <div class="row">
-<?php echo form_open("auth/create_user");?>
+<?php echo form_open_multipart("auth/create_user");?>
 
       <div class="mb-3">
             <?php echo lang('create_user_fname_label', 'first_name');?> <br />
@@ -53,7 +53,13 @@
             <?php echo lang('create_user_password_confirm_label', 'password_confirm');?> <br />
             <?php echo form_input($password_confirm);?>
       </p>
-
+      <div class="form-group">
+      <?php
+      $avatar['class'] = 'form-control';
+      echo lang('edit_user_avatar_label', 'avatar');
+      ?>
+      <input type="file" class="form-control" name="userfile" id="avatar" size="20">
+      </div>
 
       <p><?php echo form_submit('submit', lang('create_user_submit_btn'));?></p>
 

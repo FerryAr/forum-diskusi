@@ -39,11 +39,12 @@ public function read()
         $comment = $this->comment_model->getComment($id);
         foreach($comment as $c) {
             $id = $c['id'];
+            $avatar = $c['avatar'];
             $first_name = $c['first_name'];
             $created_at = $c['created_at'];
             $isi = $c['isi'];
 
-            array_push($arrReply, ['id' => $id, 'first_name' => $first_name, 'created_at' => $created_at, 'isi' => $isi]);
+            array_push($arrReply, ['id' => $id, 'avatar' => $avatar, 'first_name' => $first_name, 'created_at' => $created_at, 'isi' => $isi]);
         }
         header('Content-type: application/json');
         if(empty($arrReply)) {

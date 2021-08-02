@@ -3,7 +3,7 @@
 
 <div id="infoMessage"><?php echo $message;?></div>
 
-<?php echo form_open(uri_string());?>
+<?php echo form_open_multipart(uri_string());?>
 
       <p>
             <?php echo lang('edit_user_fname_label', 'first_name');?> <br />
@@ -34,6 +34,14 @@
             <?php echo lang('edit_user_password_confirm_label', 'password_confirm');?><br />
             <?php echo form_input($password_confirm);?>
       </p>
+
+      <div class="form-group" class="mt-3">
+      <?php
+      $avatar['class'] = 'form-control';
+      echo lang('edit_user_avatar_label', 'avatar');
+      ?>
+      <input type="file" class="form-control" name="userfile" id="avatar" size="20">
+      </div>
 
       <?php if ($this->ion_auth->is_admin()): ?>
 
