@@ -28,10 +28,21 @@ class Thread extends CI_Controller {
         if ($this->input->post('keyword')) {
             $keyword = $this->input->post('keyword');
         }
+        $pel = '';
+        if ($this->input->get('pelajaran')) {
+            $pel = $this->input->get('pelajaran');
+        }
+        $pelajaran = $this->pelajaran_model->showPel();
+        foreach($pelajaran as $p) {
+            $arrayPel[$p->id] = $p->pelajaran;
+        }
         $thread = $this->thread_model->getThread($page, $keyword, $limit, $offset);
+        $thread2 = $this->thread_model->getThreadbyPel($page, $pel, $limit, $offset);
         $data = array (
             'pesan' => $this->session->flashdata('pesan'),
             'threads' => $thread,
+            'arrayPel' => $arrayPel,
+            'thread2' => $thread2,
             'total' => $this->thread_model->getTotalThread($keyword),
             'page' => $page,
             'perPage' => $perPage,
@@ -78,6 +89,7 @@ class Thread extends CI_Controller {
                 $data['subComment'] = $subComment;
             }
         }*/
+        $this->add_count($id);
         $this->load->view('thread/thread_view', $data);
     }
     public function create() {
@@ -138,6 +150,17 @@ class Thread extends CI_Controller {
         $this->session->set_flashdata('pesan', 'Data berhasil dihapus');
         redirect(base_url('thread'));
         
+    }
+    function add_count($id)
+    {
+        $this->load->helper('cookie');
+        $check_visitor = $this->input->cookie(urldecode($id), FALSE);
+        $ip = $this->input->ip_address();
+        if ($check_visitor == false) {
+            $cookie = array("name" => urldecode($id), "value" => "$ip", "expire" => time() + 7200, "secure" => false);
+            $this->input->set_cookie($cookie);
+            $this->thread_model->update_counter(urldecode($id));
+        }
     }
     public function upImage() {
         if(isset($_FILES['upload']['name'])){

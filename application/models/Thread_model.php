@@ -5,12 +5,23 @@ class Thread_model extends CI_Model {
 
     public function getThread($page, $keyword, $limit, $offset) {
 
-        $query = $this->db->select('thread.id, thread.judul, pelajaran.pelajaran, users.first_name ')
+        $query = $this->db->select('thread.id, thread.judul, thread.isi, thread.views, pelajaran.pelajaran, users.first_name, users.avatar ')
                 ->from('thread')
                 ->join('pelajaran', 'thread.id_pelajaran = pelajaran.id', 'left')
                 ->join('users', 'thread.created_by = users.id', 'left')
                 //->like('thread.isi', $keyword)
                 ->like('thread.judul', $keyword)
+                ->limit($limit, $offset)
+                ->get()->result();
+        return $query;
+    }
+    public function getThreadbyPel($page, $pelajaran, $limit, $offset)
+    {
+        $query = $this->db->select('thread.id, thread.judul, thread.isi, thread.views, pelajaran.pelajaran, users.first_name, users.avatar ')
+                ->from('thread')
+                ->join('pelajaran', 'thread.id_pelajaran = pelajaran.id', 'left')
+                ->join('users', 'thread.created_by = users.id', 'left')
+                ->like('pelajaran.pelajaran', $pelajaran)
                 ->limit($limit, $offset)
                 ->get()->result();
         return $query;
@@ -59,5 +70,15 @@ class Thread_model extends CI_Model {
     {
         $this->db->where('id', $id);
         $this->db->delete('thread');
+    }
+    public function update_counter($id)
+    {
+        $this->db->where('id', urldecode($id));
+        $this->db->select('views'); 
+        $count = $this->db->get('thread')->row()->views;
+
+        $this->db->where('id', urldecode($id));
+        $this->db->set('views', ($count + 1));
+        $this->db->update('thread');
     }
 }

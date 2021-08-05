@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Comment_model extends CI_Model {
                         
     public function getComment($id) {
-        $query = $this->db->select('comment.id, comment.isi, comment.created_at, users.first_name ')
+        $query = $this->db->select('comment.id, comment.isi, comment.created_at, users.first_name, users.avatar')
                 ->from('comment')
                 ->join('users', 'users.id = comment.id_user', 'left')
                 ->where('id_reply', $id)

@@ -129,7 +129,7 @@ $CI->load->model('reply_model');
                     url: "<?= base_url('reply/create') ?>",
                     data: data,
                     success: function (response) {
-                        
+                        $('#isi').val('');
                         load_comment();
                     }
                 });
@@ -193,7 +193,7 @@ $CI->load->model('reply_model');
                 <input type="text" class="form-control my-2" id="isi_balasan" placeholder="Balas">\
                     <div class="text-end mb-4 mt-3">\
                     <button class="btn btn-sm btn-primary" id="btn_tambah_reply">Reply</button>\
-                    <button class="btn btn-sm btm-danger cancel" id="cancel_reply">Cancel</button>\
+                    <button class="btn btn-sm btn-danger cancel" id="cancel_reply">Cancel</button>\
                     </div>\
             ');
             $(document).on('click', '.cancel', function () {
@@ -328,7 +328,7 @@ $CI->load->model('reply_model');
                 <input type="text" class="form-control my-2" id="isi_balasbalasan" placeholder="Balas">\
                     <div class="text-end mb-4 mt-3">\
                     <button class="btn btn-sm btn-primary" id="btn_tambah_subreply">Reply</button>\
-                    <button class="btn btn-sm btm-danger" id="cancel_subreply">Cancel</button>\
+                    <button class="btn btn-sm btn-danger" id="cancel_subreply">Cancel</button>\
                     </div>\
             ');
         });
